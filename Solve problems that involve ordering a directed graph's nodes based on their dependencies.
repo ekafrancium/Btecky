@@ -1,0 +1,43 @@
+class Graph(private val numVertices: Int) {
+    private val adjacencyList: Array<MutableList<Int>> = Array(numVertices) { mutableListOf() }
+
+    fun addEdge(from: Int, to: Int) {
+        adjacencyList[from].add(to)
+    }
+
+    fun topologicalSort(): List<Int> {
+        val visited = BooleanArray(numVertices) { false }
+        val result = mutableListOf<Int>()
+
+        for (vertex in 0 until numVertices) {
+            if (!visited[vertex]) {
+                dfs(vertex, visited, result)
+            }
+        }
+
+        return result.reversed()
+    }
+
+    private fun dfs(vertex: Int, visited: BooleanArray, result: MutableList<Int>) {
+        visited[vertex] = true
+        for (neighbor in adjacencyList[vertex]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, visited, result)
+            }
+        }
+        result.add(vertex)
+    }
+}
+
+fun main() {
+    val graph = Graph(6)
+    graph.addEdge(5, 2)
+    graph.addEdge(5, 0)
+    graph.addEdge(4, 0)
+    graph.addEdge(4, 1)
+    graph.addEdge(2, 3)
+    graph.addEdge(3, 1)
+
+    val topologicalOrder = graph.topologicalSort()
+    println("Topological Sort Order: $topologicalOrder")
+}
